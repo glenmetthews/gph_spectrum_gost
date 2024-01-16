@@ -1,45 +1,45 @@
 clear all
 clc
 
-way = "U:\Zetlab\Ижора (резервная копия)\Z01_23-10-07_Z.zsg";                  %Путь до записи
-freq = 100;                                                                 %Частота записи датчика
-freq_h = 0.01;                                                              %Определение шага по частоте
-freq_strip = [0.5 1.5];                                                        %Полоса частот, в которой ищется собственный тон
-probability = 0.95;                                                         %Доверительная вероятность
+way = "";                                                                  %РџСѓС‚СЊ РґРѕ Р·Р°РїРёСЃРё
+freq = 100;                                                                 %Р§Р°СЃС‚РѕС‚Р° Р·Р°РїРёСЃРё РґР°С‚С‡РёРєР°
+freq_h = 0.01;                                                              %РћРїСЂРµРґРµР»РµРЅРёРµ С€Р°РіР° РїРѕ С‡Р°СЃС‚РѕС‚Рµ
+freq_strip = [0.5 1.5];                                                        %РџРѕР»РѕСЃР° С‡Р°СЃС‚РѕС‚, РІ РєРѕС‚РѕСЂРѕР№ РёС‰РµС‚СЃСЏ СЃРѕР±СЃС‚РІРµРЅРЅС‹Р№ С‚РѕРЅ
+probability = 0.95;                                                         %Р”РѕРІРµСЂРёС‚РµР»СЊРЅР°СЏ РІРµСЂРѕСЏС‚РЅРѕСЃС‚СЊ
 
 
-sig = signal_read(way);                                                     %Считывание сигнала
+sig = signal_read(way);                                                     %РЎС‡РёС‚С‹РІР°РЅРёРµ СЃРёРіРЅР°Р»Р°
 if sig == -1
-    error('Ошибка считывания файла');
+    error('РћС€РёР±РєР° СЃС‡РёС‚С‹РІР°РЅРёСЏ С„Р°Р№Р»Р°');
 end
 
 %sig=sig(105001:195001);
 figure()
 plot(sig)
-%sig = signal_read(way);                                                     %Считывание записи
-%if sig == -1                                                                %Проверка на коректность считывания
-%    error('Файл записи не найден');
+%sig = signal_read(way);                                                     %РЎС‡РёС‚С‹РІР°РЅРёРµ Р·Р°РїРёСЃРё
+%if sig == -1                                                                %РџСЂРѕРІРµСЂРєР° РЅР° РєРѕСЂРµРєС‚РЅРѕСЃС‚СЊ СЃС‡РёС‚С‹РІР°РЅРёСЏ
+%    error('Р¤Р°Р№Р» Р·Р°РїРёСЃРё РЅРµ РЅР°Р№РґРµРЅ');
 %end
 
-Len_sig = length(sig);                                                      %Определение длины записи
-Len_piece_sig = 1/freq_h*freq;                                              %Определение необходимой длины записи для обеспечения шага по частоте
-quantity = fix(Len_sig/Len_piece_sig);                                      %Определение количества интервалов разбиения
-Freq_max = zeros(1,quantity);                                               %Вектор "собственных" частот на каждом участке
+Len_sig = length(sig);                                                      %РћРїСЂРµРґРµР»РµРЅРёРµ РґР»РёРЅС‹ Р·Р°РїРёСЃРё
+Len_piece_sig = 1/freq_h*freq;                                              %РћРїСЂРµРґРµР»РµРЅРёРµ РЅРµРѕР±С…РѕРґРёРјРѕР№ РґР»РёРЅС‹ Р·Р°РїРёСЃРё РґР»СЏ РѕР±РµСЃРїРµС‡РµРЅРёСЏ С€Р°РіР° РїРѕ С‡Р°СЃС‚РѕС‚Рµ
+quantity = fix(Len_sig/Len_piece_sig);                                      %РћРїСЂРµРґРµР»РµРЅРёРµ РєРѕР»РёС‡РµСЃС‚РІР° РёРЅС‚РµСЂРІР°Р»РѕРІ СЂР°Р·Р±РёРµРЅРёСЏ
+Freq_max = zeros(1,quantity);                                               %Р’РµРєС‚РѕСЂ "СЃРѕР±СЃС‚РІРµРЅРЅС‹С…" С‡Р°СЃС‚РѕС‚ РЅР° РєР°Р¶РґРѕРј СѓС‡Р°СЃС‚РєРµ
 Decrement = zeros(1,quantity);
-Freq = 0:freq_h:freq/2;                                                     %Вектор частот
+Freq = 0:freq_h:freq/2;                                                     %Р’РµРєС‚РѕСЂ С‡Р°СЃС‚РѕС‚
 %bound_search=[100 300];
 %bound_search = [find(Freq == freq_strip(1))...
-%                find(Freq == freq_strip(2))];                               %Нумера элементов массива, в пределах которых проводится поиск
+%                find(Freq == freq_strip(2))];                               %РќСѓРјРµСЂР° СЌР»РµРјРµРЅС‚РѕРІ РјР°СЃСЃРёРІР°, РІ РїСЂРµРґРµР»Р°С… РєРѕС‚РѕСЂС‹С… РїСЂРѕРІРѕРґРёС‚СЃСЏ РїРѕРёСЃРє
 
 bound_search = [fix(freq_strip(1)/freq_h+1) ...
                 fix(freq_strip(2)/freq_h+1)]
 
 for sig_part=1:quantity
-    sig_i=sig(Len_piece_sig*(sig_part-1)+1:Len_piece_sig*sig_part);         %Вырезание части записи
-    A_sig_i = Amplitude_Spector(sig_i);                                     %Спектор мощности вырезанной части
-    %Max_amplit = max(A_sig_i(bound_search(1):bound_s earch(2)));             %Поиск наибольшей амплитуды в заданных пределах
-    %Num_mas_max = find(A_sig_i == Max_amplit);                              %Определение нумкра массива с максимальной частотой
-    %Freq_max(sig_part) = Freq(Num_mas_max);                                 %Определение частоты с наибольшей амплитудой
+    sig_i=sig(Len_piece_sig*(sig_part-1)+1:Len_piece_sig*sig_part);         %Р’С‹СЂРµР·Р°РЅРёРµ С‡Р°СЃС‚Рё Р·Р°РїРёСЃРё
+    A_sig_i = Amplitude_Spector(sig_i);                                     %РЎРїРµРєС‚РѕСЂ РјРѕС‰РЅРѕСЃС‚Рё РІС‹СЂРµР·Р°РЅРЅРѕР№ С‡Р°СЃС‚Рё
+    %Max_amplit = max(A_sig_i(bound_search(1):bound_s earch(2)));             %РџРѕРёСЃРє РЅР°РёР±РѕР»СЊС€РµР№ Р°РјРїР»РёС‚СѓРґС‹ РІ Р·Р°РґР°РЅРЅС‹С… РїСЂРµРґРµР»Р°С…
+    %Num_mas_max = find(A_sig_i == Max_amplit);                              %РћРїСЂРµРґРµР»РµРЅРёРµ РЅСѓРјРєСЂР° РјР°СЃСЃРёРІР° СЃ РјР°РєСЃРёРјР°Р»СЊРЅРѕР№ С‡Р°СЃС‚РѕС‚РѕР№
+    %Freq_max(sig_part) = Freq(Num_mas_max);                                 %РћРїСЂРµРґРµР»РµРЅРёРµ С‡Р°СЃС‚РѕС‚С‹ СЃ РЅР°РёР±РѕР»СЊС€РµР№ Р°РјРїР»РёС‚СѓРґРѕР№
     Freq_max(sig_part) = (bound_search(1)-1)*freq_h;
     MAX = A_sig_i(bound_search(1)-1);
     for index = bound_search(1):bound_search(2)-1
@@ -55,18 +55,18 @@ for sig_part=1:quantity
         plot([ceil(Freq_max(sig_part)/freq_h) ceil(Freq_max(sig_part)/freq_h)], [0 A_sig_i(ceil(Freq_max(sig_part)/freq_h))])
         xlim(bound_search)
     %}
-    %Decrement(sig_part) = Decrement_Damp(A_sig_i, Freq, Num_mas_max);       %Расчет декремента затухания
+    %Decrement(sig_part) = Decrement_Damp(A_sig_i, Freq, Num_mas_max);       %Р Р°СЃС‡РµС‚ РґРµРєСЂРµРјРµРЅС‚Р° Р·Р°С‚СѓС…Р°РЅРёСЏ
     Decrement(sig_part) = Decrement_Damp(A_sig_i, Freq, ceil(Freq_max(sig_part)/freq_h));
 end
-E_freq = mean(Freq_max);                                                    %Среднее значение
-S_freq = sqrt(sum((Freq_max-E_freq).^2)/(quantity*(quantity-1)));           %Среднеквадратичное отклонение
+E_freq = mean(Freq_max);                                                    %РЎСЂРµРґРЅРµРµ Р·РЅР°С‡РµРЅРёРµ
+S_freq = sqrt(sum((Freq_max-E_freq).^2)/(quantity*(quantity-1)));           %РЎСЂРµРґРЅРµРєРІР°РґСЂР°С‚РёС‡РЅРѕРµ РѕС‚РєР»РѕРЅРµРЅРёРµ
 E_decrement = mean(Decrement);
 S_decrement = sqrt(sum((Decrement-E_decrement).^2)/(quantity*(quantity-1)));
 Error_c = error_coef(probability, quantity);
 
-fprintf('Собственная частота колебаний конструкции при\n');
-fprintf('ее поиске в частотной полосе [%4.2f, %4.2f]\n', freq_strip(1), freq_strip(2));
-fprintf('и доверительной вероятности p=%3.2f равна:\n', probability);
-fprintf('%6.4f ± %6.4f Гц\n', E_freq, Error_c*S_freq);
-fprintf('Декремент основного тона равен:\n');
-fprintf('%6.4f ± %6.4f\n', E_decrement, Error_c*S_decrement);
+fprintf('РЎРѕР±СЃС‚РІРµРЅРЅР°СЏ С‡Р°СЃС‚РѕС‚Р° РєРѕР»РµР±Р°РЅРёР№ РєРѕРЅСЃС‚СЂСѓРєС†РёРё РїСЂРё\n');
+fprintf('РµРµ РїРѕРёСЃРєРµ РІ С‡Р°СЃС‚РѕС‚РЅРѕР№ РїРѕР»РѕСЃРµ [%4.2f, %4.2f]\n', freq_strip(1), freq_strip(2));
+fprintf('Рё РґРѕРІРµСЂРёС‚РµР»СЊРЅРѕР№ РІРµСЂРѕСЏС‚РЅРѕСЃС‚Рё p=%3.2f СЂР°РІРЅР°:\n', probability);
+fprintf('%6.4f В± %6.4f Р“С†\n', E_freq, Error_c*S_freq);
+fprintf('Р”РµРєСЂРµРјРµРЅС‚ РѕСЃРЅРѕРІРЅРѕРіРѕ С‚РѕРЅР° СЂР°РІРµРЅ:\n');
+fprintf('%6.4f В± %6.4f\n', E_decrement, Error_c*S_decrement);
