@@ -1,2 +1,2 @@
-signals_path = "/mnt/izhora_signals/"
+signals_path = ""
 probability = 95
