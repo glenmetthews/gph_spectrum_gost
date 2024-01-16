@@ -5,7 +5,8 @@ from typing import List
 import numpy as np
 from scipy.fft import rfft, rfftfreq
 import config
-from config import signals_path
+from config import signals_path, object_name
+
 
 
 class ZetlabSignal:
@@ -116,7 +117,7 @@ if __name__ == "__main__":
     )
     tree = ET.parse(current_signals_path + "sig0000.xml")
     for signal in tree.getroot():
-        if "Izhora" in signal.get("name"):
+        if object_name in signal.get("name"):
             axis = signal.get("name")
             axis_list.append(axis)
 
